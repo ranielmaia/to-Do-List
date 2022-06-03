@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tarefas</title>
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@500&family=Roboto:ital,wght@0,300;0,400;0,500;1,100&display=swap');
+
+        body {
+            background: url("./img/background-img.jpg") no-repeat center center;
+            background-size: cover;
+            /* ^ Para que o background fique do tamanho do monitor ^ */
+            display: flex;
+            justify-content: center;
+            /* ^ Para centralizar elementos ^ */
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .board {
+            background-color: rgba(255, 255, 255, 0.8);
+            /* ^ Com o tipo de cor rgba conseguimos controlar opacidade ^ */
+            width: 320px;
+            margin: 4px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        h3 {
+            background-color: rgb(95, 95, 95);
+            color: rgb(239, 238, 238);
+            margin: 0;
+            text-align: center;
+            /* ^ Quando for apenas texto é possível centralizar com text-align ^ */
+            font-size: 24px;
+            font-weight: 400;
+            /* ^ Após carregar a fonte do google com diferentes pesos é aqui que coloco o pesao desejado ^ */
+        }
+
+        .add-card {
+            background-color: rgba(173, 172, 172, 0.8);
+            color: rgb(39, 38, 38);
+            margin: 4px;
+            border-radius: 2px;
+
+        }
+
+        .add-card:hover {
+            /* ^ Efeito para o mouse mudar ao passar seta por cima ^ */
+            cursor: pointer;
+        }
+
+        .add-card p {
+            font-size: 16px;
+            padding: 0 6px;
+            font-weight: 100;
+
+        }
+
+        ul {
+            list-style-type: none;
+            /* ^ Para os itens listados da tag <ul> não terem pontos ^ */
+            min-height: 300px;
+            padding: 2px;
+            display: flex;
+            flex-wrap: wrap;
+            /* ^ Para quebrar e entrar dentro do container ^ */
+            align-content: flex-start;
+            /* ^ Alinhamento dos itens próximos ao centro ^ */
+        }
+
+        li {
+            background-color: white;
+            box-shadow: 2px 2px rgba(0, 0, 0, 0.2);
+            border-radius: 4px;
+            font-size: 14px;
+            min-width: 100px;
+            height: 40px;
+            display: flex;
+            justify-content: space-between;
+            margin: 4px 10px;
+            padding: 8px;
+            align-items: center;
+        }
+
+        li:hover {
+            /* ^ Efeito para o mouse mudar indicando movimento ao passar seta por cima ^ */
+            cursor: move;
+        }
+
+        .remove {
+            color: #c3c3c3;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            text-align: center;
+            font-size: 12px;
+        }
+
+        .remove:hover {
+            cursor: pointer;
+            color: aliceblue;
+            background-color: rgb(46, 45, 45);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="board">
+        <h3>A fazer</h3>
+        <ul id="todo" ondrop="drop(event, this.id)" ondragover="over(event)">
+            <!-- ^ Efeito de soltar uma tag ^ -->
+            <li id="1" draggable="true" ondragstart="drag(event)">
+                <!-- ^ Efeito de arrastar uma tag ^ -->
+                <p>Tarefa</p>
+                <p class="remove" onclick="removeCard(this)">x</p>
+            </li>
+            <li id="2" draggable="true" ondragstart="drag(event)">
+                <p>Tarefa</p>
+                <p class="remove">x</p>
+            </li>
+        </ul>
+
+        <div class="add-card" onclick="addCard(this)">
+            <p>Adicionar tarefa</p>
+        </div>
+    </div>
+
+    <div class="board">
+        <h3>Fazendo</h3>
+
+        <ul id="doing" ondrop="drop(event, this.id)" ondragover="over(event)">
+
+        </ul>
+        <div class="add-card" onclick="addCard(this)">
+            <p>Adicionar tarefa</p>
+        </div>
+    </div>
+    <div class="board">
+        <h3>Entregue</h3>
+
+        <ul id="done" ondrop="drop(event, this.id)" ondragover="over(event)">
+
+        </ul>
+        <div class="add-card" onclick="addCard(this)">
+            <p>Adicionar tarefa</p>
+        </div>
+    </div>
+
+    <script>
+
+        function drag() {
+            event.dataTransfer.setData("card", event.target.id);
+        }
+
+        function over(event) {
+            event.preventDefault();
+            /* ^ Para prevenir o comportamento padrão do navegador ^  */
+        }
+
+        function drop(event, id) {
+            event.preventDefault();
+            const target = document.getElementById(id);
+            const data = event.dataTransfer.getData("card");
+            const card = document.getElementById(data);
+            target.appendChild(card)
+            event.dataTransfer.clearData();
+        }
+
+
+        function addCard(elemento) {
+            const ulId = elemento.previousElementSibling.id;
+            const text = prompt("Qual é a tarefa?");
+            const board = document.getElementById(ulId);
+
+            const template = `
+                <li id="${new Date().getTime()}" draggable="true" ondragstart="drag(event)">
+                    <p>${text}</p>
+                    <p class="remove" onclick="removeCard(this)">x</p>
+                </li>
+            `;   /* ^ Essa variável é um template ^ */
+
+            board.innerHTML = board.innerHTML + template;
+        }
+
+        function removeCard(elemento) {
+            document.getElementById(elemento.parentElement.id).remove();
+        }
+
+    </script>
+
+</body>
+
+</html>
